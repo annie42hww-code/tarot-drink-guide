@@ -67,10 +67,17 @@ body{
 .draw-header{text-align:center;margin-bottom:1.5rem}
 .draw-title{font-size:1.6rem;color:var(--gold);text-shadow:0 0 15px var(--magic-glow);margin-bottom:.5rem}
 .draw-hint{font-size:1rem;opacity:.8}
-.cards-container{display:flex;gap:clamp(.8rem,3vw,2rem);flex-wrap:wrap;justify-content:center;perspective:1500px}
+.cards-container{display:flex;gap:clamp(.8rem,3vw,2rem);flex-wrap:wrap;justify-content:center;perspective:1500px;transition:opacity .3s ease,transform .3s ease}
 
-/* Card */
-.card-scene{width:clamp(120px,28vw,200px);height:clamp(180px,42vw,300px);perspective:800px;cursor:pointer;transition:transform .3s ease}
+/* Card entrance animation */
+.card-scene{width:clamp(120px,28vw,200px);height:clamp(180px,42vw,300px);perspective:800px;cursor:pointer;transition:transform .3s ease;animation:cardEnter .5s ease-out backwards}
+.card-scene:nth-child(1){animation-delay:0s}
+.card-scene:nth-child(2){animation-delay:.1s}
+.card-scene:nth-child(3){animation-delay:.2s}
+@keyframes cardEnter{
+  from{opacity:0;transform:translateY(30px) scale(.9)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
 .card-scene:hover{transform:translateY(-8px)}
 .card-inner{position:relative;width:100%;height:100%;transition:transform .8s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
 .card-scene.flipped .card-inner{transform:rotateY(180deg)}
@@ -79,18 +86,148 @@ body{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 
-/* Card Back */
+/* Card Back — Ornate Magical Design */
 .card-back{
-  background:linear-gradient(145deg,#1a0a30,#2d1155);
-  border:2px solid var(--gold);
-  box-shadow:0 0 20px rgba(180,100,255,.3),inset 0 0 60px rgba(100,40,180,.2);
+  background:linear-gradient(160deg,#0b0418 0%,#150a28 25%,#1f0d3d 50%,#150a28 75%,#0b0418 100%);
+  border:2.5px solid var(--gold);
+  border-radius:14px;
+  box-shadow:
+    0 0 15px rgba(180,100,255,.25),
+    0 0 35px rgba(180,100,255,.1),
+    0 0 60px rgba(100,40,180,.08),
+    inset 0 0 80px rgba(100,40,180,.15);
   overflow:hidden;
 }
-.card-back::before{content:'';position:absolute;inset:8px;border-radius:8px;border:1.5px solid rgba(212,168,67,.5)}
-.card-back-pattern{font-size:3rem;opacity:.6;animation:patternPulse 2s ease-in-out infinite}
-@keyframes patternPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.7;transform:scale(1.08)}}
-.card-back-moon{font-size:1.8rem;margin-top:.3rem;opacity:.5}
-.card-scene:hover .card-back{box-shadow:0 0 35px rgba(200,140,255,.5),inset 0 0 80px rgba(120,60,200,.3);border-color:var(--gold-light)}
+/* Micro-starfield texture on card back */
+.card-back-stars{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(.8px .8px at 15% 12%,rgba(255,255,255,.7),transparent),
+    radial-gradient(.6px .6px at 55% 18%,rgba(255,233,160,.6),transparent),
+    radial-gradient(1px 1px at 82% 8%,rgba(255,255,255,.5),transparent),
+    radial-gradient(.7px .7px at 25% 35%,rgba(255,233,160,.4),transparent),
+    radial-gradient(.5px .5px at 70% 28%,rgba(255,255,255,.55),transparent),
+    radial-gradient(.9px .9px at 90% 42%,rgba(255,255,255,.45),transparent),
+    radial-gradient(.6px .6px at 10% 55%,rgba(255,233,160,.5),transparent),
+    radial-gradient(.8px .8px at 45% 48%,rgba(255,255,255,.4),transparent),
+    radial-gradient(.5px .5px at 65% 60%,rgba(255,233,160,.55),transparent),
+    radial-gradient(.7px .7px at 35% 72%,rgba(255,255,255,.5),transparent),
+    radial-gradient(.6px .6px at 80% 75%,rgba(255,255,255,.45),transparent),
+    radial-gradient(.9px .9px at 18% 85%,rgba(255,233,160,.6),transparent),
+    radial-gradient(.5px .5px at 50% 88%,rgba(255,255,255,.4),transparent),
+    radial-gradient(.7px .7px at 72% 90%,rgba(255,255,255,.5),transparent);
+}
+/* Outer ornate frame border */
+.card-back::before{
+  content:'';position:absolute;inset:7px;border-radius:8px;
+  border:1.5px solid rgba(212,168,67,.5);
+  box-shadow:inset 0 0 12px rgba(180,120,60,.08);
+  z-index:3;pointer-events:none;
+}
+/* Inner glow overlay */
+.card-back::after{
+  content:'';position:absolute;inset:12px;border-radius:5px;
+  background:radial-gradient(ellipse at center,rgba(160,100,255,.12) 0%,transparent 65%);
+  z-index:1;pointer-events:none;
+}
+/* Four corner diamond accents */
+.cb-corner{
+  position:absolute;z-index:4;pointer-events:none;
+  color:rgba(212,168,67,.7);font-size:.85rem;
+  text-shadow:0 0 6px rgba(212,168,67,.5);
+}
+.cb-corner.tl{top:12px;left:14px}
+.cb-corner.tr{top:12px;right:14px}
+.cb-corner.bl{bottom:12px;left:14px}
+.cb-corner.br{bottom:12px;right:14px}
+/* Concentric mandala rings */
+.cb-ring{
+  position:absolute;z-index:2;pointer-events:none;border-radius:50%;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+}
+.cb-ring-outer{
+  width:62%;aspect-ratio:1;
+  border:1px solid rgba(212,168,67,.35);
+  box-shadow:0 0 8px rgba(180,120,60,.15),inset 0 0 8px rgba(180,120,60,.08);
+}
+.cb-ring-mid{
+  width:48%;aspect-ratio:1;
+  border:1px dashed rgba(212,168,67,.28);
+}
+.cb-ring-inner{
+  width:34%;aspect-ratio:1;
+  border:1.2px solid rgba(212,168,67,.4);
+  box-shadow:0 0 12px rgba(200,150,60,.2);
+}
+/* Central mystical symbol */
+.cb-center{
+  position:absolute;z-index:5;pointer-events:none;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:1.8rem;opacity:.85;
+  filter:drop-shadow(0 0 8px rgba(200,160,80,.6));
+  animation:centerGlow 2.5s ease-in-out infinite;
+}
+@keyframes centerGlow{
+  0%,100%{opacity:.7;filter:drop-shadow(0 0 6px rgba(200,160,80,.4))}
+  50%{opacity:.95;filter:drop-shadow(0 0 14px rgba(220,180,100,.8))}
+}
+/* Top & bottom decorative line of stars */
+.cb-edge{
+  position:absolute;z-index:4;pointer-events:none;
+  left:50%;transform:translateX(-50%);
+  display:flex;gap:.35rem;
+}
+.cb-edge-top{top:15px}
+.cb-edge-bot{bottom:15px}
+.cb-edge span{
+  font-size:.45rem;color:rgba(212,168,67,.4);
+  text-shadow:0 0 3px rgba(212,168,67,.3);
+}
+/* Scattered tiny sparkles */
+.cb-sparkle{
+  position:absolute;z-index:4;pointer-events:none;
+  font-size:.45rem;color:rgba(240,214,138,.5);
+  animation:sparklePulse 3s ease-in-out infinite;
+}
+.cb-sparkle.s1{top:30%;left:8%;animation-delay:0s}
+.cb-sparkle.s2{top:25%;right:10%;animation-delay:.7s}
+.cb-sparkle.s3{bottom:28%;left:10%;animation-delay:1.4s}
+.cb-sparkle.s4{bottom:25%;right:8%;animation-delay:2.1s}
+@keyframes sparklePulse{
+  0%,100%{opacity:.25;transform:scale(.8)}
+  50%{opacity:.85;transform:scale(1.2)}
+}
+/* Hover effects */
+.card-scene:hover .card-back{
+  box-shadow:
+    0 0 25px rgba(200,140,255,.5),
+    0 0 50px rgba(180,100,255,.25),
+    0 0 80px rgba(120,60,200,.15),
+    inset 0 0 100px rgba(130,50,200,.22);
+  border-color:var(--gold-light);
+}
+.card-scene:hover .cb-center{
+  animation:centerGlowHover .6s ease-in-out infinite;
+}
+@keyframes centerGlowHover{
+  0%,100%{opacity:.85;filter:drop-shadow(0 0 10px rgba(220,180,100,.7))}
+  50%{opacity:1;filter:drop-shadow(0 0 20px rgba(240,200,120,1))}
+}
+/* Shuffle button */
+.btn-shuffle{
+  display:inline-block;margin-top:1.8rem;padding:.6rem 1.5rem;
+  font-size:.95rem;font-weight:bold;font-family:inherit;
+  color:var(--gold-light);background:rgba(100,40,180,.15);
+  border:1.5px solid rgba(212,168,67,.4);border-radius:50px;
+  cursor:pointer;transition:all .3s;letter-spacing:.03em;
+}
+.btn-shuffle:hover{
+  background:rgba(120,60,200,.25);
+  border-color:var(--gold);
+  box-shadow:0 0 20px rgba(160,100,240,.3);
+  transform:translateY(-2px);
+}
+.btn-shuffle:active{transform:scale(.96)}
 
 /* Card Front */
 .card-front{
@@ -177,6 +314,7 @@ body{
     <p class="draw-hint">跟随你的直觉，点击那张正在呼唤你的牌</p>
   </div>
   <div class="cards-container" id="cardsContainer"></div>
+  <button class="btn-shuffle" onclick="reshuffleCards()">🔄 换一批牌</button>
 </div>
 
 <!-- Page 3: Result -->
@@ -1165,6 +1303,9 @@ function shuffle(arr) { const a = [...arr]; for (let i = a.length-1; i>0; i--) {
 let drawnCards = []; // [{card, pickedDrink, reason}]
 
 function goToDraw() {
+  const container = document.getElementById('cardsContainer');
+  container.style.opacity = '1';
+  container.style.transform = 'scale(1)';
   const selected = shuffle(tarotCards).slice(0, 3);
   drawnCards = selected.map(card => {
     const { drink, reason } = pickDrink(card);
@@ -1174,15 +1315,45 @@ function goToDraw() {
   showPage('page-draw');
 }
 
+function reshuffleCards() {
+  const container = document.getElementById('cardsContainer');
+  container.style.opacity = '0';
+  container.style.transform = 'scale(0.95)';
+  container.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  setTimeout(() => {
+    const selected = shuffle(tarotCards).slice(0, 3);
+    drawnCards = selected.map(card => {
+      const { drink, reason } = pickDrink(card);
+      return { card, drink, reason };
+    });
+    renderCards();
+    container.style.opacity = '1';
+    container.style.transform = 'scale(1)';
+  }, 300);
+}
+
 function renderCards() {
   const container = document.getElementById('cardsContainer');
-  const patterns = ['🔮','🌙','⭐','✨','🪄','💎','🃏','🌟'];
+  const centers = ['🔮','🌙','⭐','👁️','☀️','🪄','💎','🌟'];
   container.innerHTML = drawnCards.map((dc, i) => `
     <div class="card-scene" onclick="revealCard(${i}, this)" id="cardScene${i}">
       <div class="card-inner">
         <div class="card-back">
-          <span class="card-back-pattern">${patterns[i % patterns.length]}</span>
-          <span class="card-back-moon">🌙</span>
+          <span class="card-back-stars"></span>
+          <span class="cb-corner tl">◆</span>
+          <span class="cb-corner tr">◆</span>
+          <span class="cb-corner bl">◆</span>
+          <span class="cb-corner br">◆</span>
+          <span class="cb-ring cb-ring-outer"></span>
+          <span class="cb-ring cb-ring-mid"></span>
+          <span class="cb-ring cb-ring-inner"></span>
+          <span class="cb-center">${centers[i % centers.length]}</span>
+          <span class="cb-edge cb-edge-top"><span>✦</span><span>✦</span><span>✦</span></span>
+          <span class="cb-edge cb-edge-bot"><span>✦</span><span>✦</span><span>✦</span></span>
+          <span class="cb-sparkle s1">✦</span>
+          <span class="cb-sparkle s2">✧</span>
+          <span class="cb-sparkle s3">✦</span>
+          <span class="cb-sparkle s4">✧</span>
         </div>
         <div class="card-front">
           <span class="card-emoji">${dc.card.emoji}</span>
