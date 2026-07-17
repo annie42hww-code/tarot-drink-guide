@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔮 塔罗牌饮品指引</title>
+<title>✦ 塔罗牌饮品指引</title>
 <style>
 :root {
   --bg-deep: #06061a;
@@ -36,8 +36,9 @@ body{
 #stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
 
 .particle{
-  position:fixed;pointer-events:none;z-index:1;font-size:1.2rem;opacity:0;
+  position:fixed;pointer-events:none;z-index:1;font-size:1.1rem;opacity:0;
   animation:floatUp 4s ease-out forwards;
+  text-shadow:0 0 6px currentColor;
 }
 @keyframes floatUp{
   0%{opacity:1;transform:translateY(0)scale(.5)rotate(0deg)}
@@ -51,13 +52,46 @@ body{
 }
 .page.active{display:flex}
 
-/* Start Page */
-.start-emoji{
-  font-size:clamp(4rem,10vw,7rem);display:block;text-align:center;
-  margin-bottom:1rem;animation:float 3s ease-in-out infinite;position:relative;z-index:1;
-  filter:drop-shadow(0 0 25px rgba(180,100,255,.5)) drop-shadow(0 0 50px rgba(200,160,80,.3));
+/* Start Page — Geometric Sigil (replaces emoji) */
+.start-sigil{
+  position:relative;z-index:1;width:clamp(80px,16vw,130px);
+  height:clamp(80px,16vw,130px);margin:0 auto 1.5rem;
+  animation:sigilFloat 3s ease-in-out infinite;
+  filter:drop-shadow(0 0 20px rgba(200,160,80,.5)) drop-shadow(0 0 40px rgba(180,100,255,.3));
 }
-/* glowing halo behind start emoji */
+@keyframes sigilFloat{0%,100%{transform:translateY(0)rotate(0deg)}50%{transform:translateY(-15px)rotate(5deg)}}
+/* outer rotated square */
+.start-sigil-outer{
+  position:absolute;inset:0;border:2.5px solid var(--gold);
+  border-radius:6px;transform:rotate(45deg);
+  box-shadow:0 0 15px rgba(200,160,80,.35),0 0 30px rgba(200,160,80,.12),inset 0 0 15px rgba(200,160,80,.08);
+  animation:sigilGlow 2.5s ease-in-out infinite;
+}
+@keyframes sigilGlow{0%,100%{box-shadow:0 0 15px rgba(200,160,80,.35),0 0 30px rgba(200,160,80,.12)}50%{box-shadow:0 0 25px rgba(220,180,100,.6),0 0 50px rgba(180,120,220,.25)}}
+/* inner rotated square */
+.start-sigil-inner{
+  position:absolute;inset:20%;border:1.5px solid var(--gold-light);
+  border-radius:5px;transform:rotate(45deg);
+  box-shadow:inset 0 0 8px rgba(200,160,80,.15);
+}
+/* center dot */
+.start-sigil-dot{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:10px;height:10px;background:var(--gold-light);border-radius:50%;
+  box-shadow:0 0 12px var(--gold),0 0 25px var(--gold);
+  z-index:2;
+}
+/* 4 tiny corner diamonds */
+.start-sigil-corner{
+  position:absolute;z-index:3;font-size:.5rem;color:var(--gold);
+  text-shadow:0 0 5px var(--gold);
+}
+.start-sigil-corner.tl{top:-2px;left:-2px}
+.start-sigil-corner.tr{top:-2px;right:-2px}
+.start-sigil-corner.bl{bottom:-2px;left:-2px}
+.start-sigil-corner.br{bottom:-2px;right:-2px}
+
+/* glowing halo behind start sigil */
 .start-halo{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:clamp(180px,35vw,280px);height:clamp(180px,35vw,280px);
@@ -186,13 +220,21 @@ body{
   border:1.2px solid rgba(212,168,67,.4);
   box-shadow:0 0 12px rgba(200,150,60,.2);
 }
-/* Central mystical symbol */
+/* Central geometric diamond — replaces emoji */
 .cb-center{
   position:absolute;z-index:5;pointer-events:none;
-  left:50%;top:50%;transform:translate(-50%,-50%);
-  font-size:1.8rem;opacity:.85;
-  filter:drop-shadow(0 0 8px rgba(200,160,80,.6));
+  left:50%;top:50%;transform:translate(-50%,-50%)rotate(45deg);
+  width:18px;height:18px;
+  border:2px solid rgba(212,168,67,.8);
+  border-radius:3px;
+  box-shadow:0 0 10px rgba(200,160,80,.5),inset 0 0 6px rgba(200,160,80,.2);
   animation:centerGlow 2.5s ease-in-out infinite;
+}
+/* inner dot in diamond */
+.cb-center::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:4px;height:4px;background:rgba(240,214,138,.9);border-radius:50%;
+  box-shadow:0 0 6px rgba(240,214,138,.6);
 }
 @keyframes centerGlow{
   0%,100%{opacity:.7;filter:drop-shadow(0 0 6px rgba(200,160,80,.4))}
@@ -291,10 +333,21 @@ body{
   pointer-events:none;z-index:0;
 }
 .card-front>*{position:relative;z-index:1}
-.card-front .card-emoji{
-  font-size:2.2rem;flex-shrink:0;
-  filter:drop-shadow(0 0 8px rgba(180,120,40,.35));
-}
+/* Card front geometric suit icon — replaces card emoji */
+.card-suit{font-size:1.6rem;flex-shrink:0;line-height:1;text-align:center;margin-bottom:.1rem}
+.suit-major{color:var(--gold);filter:drop-shadow(0 0 6px rgba(200,160,80,.4))}
+.suit-wands{color:#e87a3a;filter:drop-shadow(0 0 6px rgba(232,122,58,.35))}
+.suit-cups{color:#5b9bd5;filter:drop-shadow(0 0 6px rgba(91,155,213,.35))}
+.suit-swords{color:#e0b840;filter:drop-shadow(0 0 6px rgba(224,184,64,.35))}
+.suit-pentacles{color:#5a9e4b;filter:drop-shadow(0 0 6px rgba(90,158,75,.35))}
+
+/* Shop color bar — replaces drink emoji */
+.shop-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;flex-shrink:0;vertical-align:middle}
+.shop-dot.cudi{background:#e84a2d}
+.shop-dot.ruixing{background:#4a90d9}
+.shop-dot.xicha{background:#5a9e4b}
+.shop-dot.bawang{background:#9b59b6}
+.shop-dot.yidiandian{background:#f0c040}
 .card-front .card-name{
   font-size:1.05rem;font-weight:bold;color:var(--gold-dark);flex-shrink:0;
   text-shadow:0 1px 0 rgba(255,255,255,.4);
@@ -311,7 +364,6 @@ body{
   background:linear-gradient(90deg,transparent,rgba(180,140,50,.5),transparent);
   margin:.25rem 0;
 }
-.card-front .card-drink-icon{font-size:1.3rem;flex-shrink:0}
 .card-front .card-drink{
   font-size:.7rem;color:var(--ink);font-weight:bold;flex-shrink:0;
 }
@@ -365,10 +417,14 @@ body{
   pointer-events:none;
 }
 .result-card-display>*{position:relative;z-index:1}
-.result-emoji{
-  font-size:4rem;display:block;margin-bottom:.5rem;
-  filter:drop-shadow(0 0 15px rgba(200,150,60,.5));
+.result-suit{
+  font-size:3rem;display:block;margin-bottom:.5rem;line-height:1;
 }
+.result-suit.suit-major{filter:drop-shadow(0 0 15px rgba(200,150,60,.5))}
+.result-suit.suit-wands{filter:drop-shadow(0 0 15px rgba(232,122,58,.45))}
+.result-suit.suit-cups{filter:drop-shadow(0 0 15px rgba(91,155,213,.45))}
+.result-suit.suit-swords{filter:drop-shadow(0 0 15px rgba(224,184,64,.45))}
+.result-suit.suit-pentacles{filter:drop-shadow(0 0 15px rgba(90,158,75,.45))}
 .result-card-name{font-size:1.6rem;color:var(--gold-dark);font-weight:bold;text-shadow:0 1px 0 rgba(255,255,255,.3)}
 .result-card-keywords{font-size:.9rem;color:var(--ruby);margin-top:.3rem;font-weight:500}
 
@@ -408,7 +464,7 @@ body{
 @media(max-width:480px){
   .cards-container{gap:.5rem}
   .card-scene{width:105px;height:158px}
-  .card-front .card-emoji{font-size:1.7rem}
+  .card-front .card-suit{font-size:1.3rem}
   .card-front .card-name{font-size:.85rem}
   .card-front .card-keywords{font-size:.55rem}
   .card-front .card-drink{font-size:.6rem}
@@ -416,7 +472,7 @@ body{
   .card-front{padding:.45rem .35rem;gap:.1rem}
   .card-front::before{inset:4px;border-radius:5px}
   .result-card-display{padding:1.5rem 1rem}
-  .result-emoji{font-size:3rem}
+  .result-suit{font-size:2.5rem}
   .result-card-name{font-size:1.3rem}
 }
 </style>
@@ -426,7 +482,15 @@ body{
 
 <!-- Page 1: Start -->
 <div id="page-start" class="page active">
-  <span class="start-emoji">🔮</span>
+  <div class="start-sigil">
+    <div class="start-sigil-outer"></div>
+    <div class="start-sigil-inner"></div>
+    <div class="start-sigil-dot"></div>
+    <span class="start-sigil-corner tl">◆</span>
+    <span class="start-sigil-corner tr">◆</span>
+    <span class="start-sigil-corner bl">◆</span>
+    <span class="start-sigil-corner br">◆</span>
+  </div>
   <span class="start-halo"></span>
   <h1 class="start-title">塔罗牌饮品指引</h1>
   <p class="start-subtitle">
@@ -434,17 +498,17 @@ body{
     抽取一张塔罗牌，<br>
     让它为你指引今日的专属味道。
   </p>
-  <button class="btn-magic" onclick="goToDraw()">✨ 开始抽牌</button>
+  <button class="btn-magic" onclick="goToDraw()">开始抽牌</button>
 </div>
 
 <!-- Page 2: Draw -->
 <div id="page-draw" class="page">
   <div class="draw-header">
-    <h2 class="draw-title">🌙 选择一张牌</h2>
+    <h2 class="draw-title">选择一张牌</h2>
     <p class="draw-hint">跟随你的直觉，点击那张正在呼唤你的牌</p>
   </div>
   <div class="cards-container" id="cardsContainer"></div>
-  <button class="btn-shuffle" onclick="reshuffleCards()">🔄 换一批牌</button>
+  <button class="btn-shuffle" onclick="reshuffleCards()">换一批牌</button>
 </div>
 
 <!-- Page 3: Result -->
@@ -1557,10 +1621,12 @@ window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
 
 // ===== Floating Particles =====
 function spawnParticle(x, y) {
-  const emojis = ['✨','⭐','💫','🌟','🔮','🌙','💜','🪄'];
+  const shapes = ['✦','◆','●','▲','◈','✧','■','▸'];
+  const colors = ['#c9a44b','#f0d68a','#b366ff','#e87a3a','#5b9bd5','#5a9e4b','#e0b840','#f0c040'];
   const el = document.createElement('span');
   el.className = 'particle';
-  el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  el.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+  el.style.color = colors[Math.floor(Math.random() * colors.length)];
   el.style.left = x + 'px'; el.style.top = y + 'px';
   document.body.appendChild(el);
   el.addEventListener('animationend', () => el.remove());
@@ -1614,10 +1680,28 @@ function reshuffleCards() {
   }, 300);
 }
 
+// ===== Suit & Shop helpers =====
+function getSuitInfo(card) {
+  if (card.arcana === 'major') return { shape:'✦', cls:'suit-major' };
+  const map = { wands:{shape:'▲',cls:'suit-wands'}, cups:{shape:'●',cls:'suit-cups'},
+                swords:{shape:'◆',cls:'suit-swords'}, pentacles:{shape:'■',cls:'suit-pentacles'} };
+  return map[card.suit] || {shape:'●',cls:'suit-cups'};
+}
+function getShopClass(shop) {
+  if (shop.includes('库迪')) return 'cudi';
+  if (shop.includes('瑞幸')) return 'ruixing';
+  if (shop.includes('喜茶')) return 'xicha';
+  if (shop.includes('霸王')) return 'bawang';
+  if (shop.includes('一点点')) return 'yidiandian';
+  return '';
+}
+
 function renderCards() {
   const container = document.getElementById('cardsContainer');
-  const centers = ['🔮','🌙','⭐','👁️','☀️','🪄','💎','🌟'];
-  container.innerHTML = drawnCards.map((dc, i) => `
+  container.innerHTML = drawnCards.map((dc, i) => {
+    const suit = getSuitInfo(dc.card);
+    const shopCls = getShopClass(dc.drink.shop);
+    return `
     <div class="card-scene" onclick="revealCard(${i}, this)" id="cardScene${i}">
       <div class="card-inner">
         <div class="card-back">
@@ -1629,7 +1713,7 @@ function renderCards() {
           <span class="cb-ring cb-ring-outer"></span>
           <span class="cb-ring cb-ring-mid"></span>
           <span class="cb-ring cb-ring-inner"></span>
-          <span class="cb-center">${centers[i % centers.length]}</span>
+          <span class="cb-center"></span>
           <span class="cb-edge cb-edge-top"><span>✦</span><span>✦</span><span>✦</span></span>
           <span class="cb-edge cb-edge-bot"><span>✦</span><span>✦</span><span>✦</span></span>
           <span class="cb-sparkle s1">✦</span>
@@ -1638,18 +1722,17 @@ function renderCards() {
           <span class="cb-sparkle s4">✧</span>
         </div>
         <div class="card-front">
-          <span class="card-emoji">${dc.card.emoji}</span>
+          <span class="card-suit ${suit.cls}">${suit.shape}</span>
           <span class="card-name">${dc.card.name}</span>
           <span class="card-en">${dc.card.nameEn}</span>
           <span class="card-keywords">${dc.card.keywords}</span>
           <div class="card-divider"></div>
-          <span class="card-drink-icon">${dc.drink.emoji}</span>
           <span class="card-drink">${dc.drink.name}</span>
-          <span class="card-shop">${dc.drink.shop}</span>
+          <span class="card-shop"><span class="shop-dot ${shopCls}"></span>${dc.drink.shop}</span>
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function revealCard(index, sceneEl) {
@@ -1659,24 +1742,26 @@ function revealCard(index, sceneEl) {
 
 function showResult(dc) {
   const { card, drink, reason } = dc;
+  const suit = getSuitInfo(card);
+  const shopCls = getShopClass(drink.shop);
   const content = document.getElementById('resultContent');
   content.innerHTML = `
     <div class="result-card-display">
-      <span class="result-emoji">${card.emoji}</span>
+      <span class="result-suit ${suit.cls}">${suit.shape}</span>
       <div class="result-card-name">${card.name} · ${card.nameEn}</div>
       <div class="result-card-keywords">${card.keywords}</div>
     </div>
     <div class="result-drink-section">
-      <div class="result-drink-label">🃏 塔罗为你指引的今日饮品</div>
-      <div class="result-drink-name">${drink.emoji} ${drink.name}</div>
-      <div class="result-drink-shop">${drink.shop}</div>
+      <div class="result-drink-label">塔罗为你指引的今日饮品</div>
+      <div class="result-drink-name">${drink.name}</div>
+      <div class="result-drink-shop"><span class="shop-dot ${shopCls}"></span>${drink.shop}</div>
       <span class="result-drink-detail">${drink.detail}</span>
     </div>
     <div class="result-reason">
-      <div class="result-reason-label">💫 塔罗的指引</div>
+      <div class="result-reason-label">塔罗的指引</div>
       ${reason}
     </div>
-    <button class="btn-retry" onclick="goToDraw()">✨ 再抽一次</button>
+    <button class="btn-retry" onclick="goToDraw()">再抽一次</button>
   `;
   showPage('page-result');
   for (let i = 0; i < 12; i++) {
