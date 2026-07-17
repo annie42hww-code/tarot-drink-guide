@@ -1582,13 +1582,6 @@ const tarotCards = [
   },
 ];
 
-// ===== Pick random drink for a card =====
-function pickDrink(card) {
-  const drinks = card.drinks;
-  const idx = Math.floor(Math.random() * drinks.length);
-  return { drink: drinks[idx], reason: card.reasons[drinks[idx].detail] };
-}
-
 // ===== Starry Background =====
 const canvas = document.getElementById('stars-canvas');
 const ctx = canvas.getContext('2d');
@@ -1645,19 +1638,34 @@ function showPage(id) {
   document.getElementById(id).classList.add('active');
 }
 
+// ===== Build drink→cards reverse mapping (equal drink probability) =====
+const drinkCardMap = {}; // drink.detail → { drink, cardIndices: [] }
+tarotCards.forEach((card, cardIdx) => {
+  card.drinks.forEach(drink => {
+    if (!drinkCardMap[drink.detail]) {
+      drinkCardMap[drink.detail] = { drink, cardIndices: [] };
+    }
+    drinkCardMap[drink.detail].cardIndices.push(cardIdx);
+  });
+});
+const allDrinkDetails = Object.keys(drinkCardMap); // all unique drinks in play
+
 // ===== Shuffle & Draw =====
 function shuffle(arr) { const a = [...arr]; for (let i = a.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-let drawnCards = []; // [{card, pickedDrink, reason}]
+let drawnCards = []; // [{card, drink, reason}]
 
 function goToDraw() {
   const container = document.getElementById('cardsContainer');
   container.style.opacity = '1';
   container.style.transform = 'scale(1)';
-  const selected = shuffle(tarotCards).slice(0, 3);
-  drawnCards = selected.map(card => {
-    const { drink, reason } = pickDrink(card);
-    return { card, drink, reason };
+  // Pick 3 drinks first (equal probability), then find matching cards
+  const pickedDetails = shuffle(allDrinkDetails).slice(0, 3);
+  drawnCards = pickedDetails.map(detail => {
+    const entry = drinkCardMap[detail];
+    const cardIdx = entry.cardIndices[Math.floor(Math.random() * entry.cardIndices.length)];
+    const card = tarotCards[cardIdx];
+    return { card, drink: entry.drink, reason: card.reasons[detail] };
   });
   renderCards();
   showPage('page-draw');
@@ -1669,10 +1677,12 @@ function reshuffleCards() {
   container.style.transform = 'scale(0.95)';
   container.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
   setTimeout(() => {
-    const selected = shuffle(tarotCards).slice(0, 3);
-    drawnCards = selected.map(card => {
-      const { drink, reason } = pickDrink(card);
-      return { card, drink, reason };
+    const pickedDetails = shuffle(allDrinkDetails).slice(0, 3);
+    drawnCards = pickedDetails.map(detail => {
+      const entry = drinkCardMap[detail];
+      const cardIdx = entry.cardIndices[Math.floor(Math.random() * entry.cardIndices.length)];
+      const card = tarotCards[cardIdx];
+      return { card, drink: entry.drink, reason: card.reasons[detail] };
     });
     renderCards();
     container.style.opacity = '1';
